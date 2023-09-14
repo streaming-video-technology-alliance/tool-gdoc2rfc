@@ -1,0 +1,11 @@
+   
+        <section anchor="Security" title="Security Considerations">
+            <t>
+            The FCI and MI objects defined in the present document are
+   transferred via the interfaces defined in CDNI <xref target="RFC8006" />. <xref target="RFC8006" />
+   describes how to secure these interfaces, protecting the integrity,
+   confidentiality and ensuring the authenticity of the dCDN and uCDN.
+   The security provide by <xref target="RFC8006" /> should therefore address the above
+   security concerns.
+            </t>
+        </section>
