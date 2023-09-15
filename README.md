@@ -2,7 +2,7 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
-WARNING: This README.md has been generate by chat GPT. Until further notice, it can contain incorrect documentation. TBD
+WARNING: This README.md has been generate by chat GPT. Until further notice, it can contain incorrect information. WIP
 
 
 This open-source Python tool is designed to convert DOCX documents into the XML format used for publishing RFCs (Request for Comments) by the IETF (Internet Engineering Task Force). It consists of three main scripts that work together to facilitate the conversion process. The tool is distributed under the MIT License.
@@ -19,76 +19,104 @@ This open-source Python tool is designed to convert DOCX documents into the XML 
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
 
+## Requirements
+
+This project requires Python 3.x >
+
 ## Installation
 
 To use this DOCX to RFC XML Converter, follow these steps:
 
-1. Clone the repository to your local machine:
+1. Clone the repository to your local machine in a working directory:
 
    ```bash
-   git clone https://github.com/yourusername/docx-to-rfc-xml-converter.git
+   git clone git@github.com:streaming-video-technology-alliance/tool-gdoc2rfc.git
    ```
 
 2. Install the required Python dependencies:
 
    ```bash
-   pip install -r requirements.txt
+   cd tool-gdoc2rfc
+   pip3 install -r requirements.txt
    ```
 
-## Usage
+3. Duplicate `draft_sample` directory with a significative name for your draft. 
 
-To convert a DOCX document to RFC XML format, use the following command:
-
-```bash
-python extract_docx.py -c config.json
-```
-
-For more detailed instructions on how to configure and use each script, refer to the [Scripts](#scripts) section below.
+   ```bash
+   cp -pR draft-sample draft-smith-someinterestingthing-ietf118
+   ```
 
 ## Configuration
 
-Before running the scripts, you'll need to create a configuration file (`config.json`) to specify the conversion settings. Here's an example configuration file:
+### Configuration file
 
-```json
-{
-  "input_dir": "input_docx/",
-  "output_dir": "output_xml/",
-  "rfc_version": "draft-00",
-  "chapter_order": ["intro", "body", "conclusion"],
-  "other_options": {
-    "key1": "value1",
-    "key2": "value2"
-  }
-}
+A sample configuration file named `configuration.conf` is included in the duplicated folder. The configuration file is common for all scripts, and is divided in sections.
+
+1. `[extract_docx]` affects to `extract_docx.py`, `extract_references.py` & `extract_diagrams.py` 
+
+
+ Here's an example configuration file:
+
+```python
+[extract_docx]
+work_directory=work/
+filename=sample.docx
+chapters_process= [{'c':'2', 'r':False}, {'c':'2.1', 'r':False} {'c': '4', 'r':True}, {'c':'5', 'r':True}, {'c':'6', 'r':True}, {'c':'7', 'r':True}]
 ```
 
-- `input_dir`: The directory containing the input DOCX file(s).
-- `output_dir`: The directory where the converted RFC XML files will be saved.
-- `rfc_version`: The version of the RFC you want to create (e.g., "draft-00").
-- `chapter_order`: The order in which chapters should be inserted into the final RFC document.
-- `other_options`: Additional options specific to your project.
+- `work_directory`: The directory containing the input DOCX file and where the script will place the generated files.
+- `filename`: The name of the the input DOCX file 
+- `chapters_process`: List of chapters of the input DOCX file that will be processed. It is a json list with items that indicate the number of the chapter, and if the chapter will be processed including all its subchapters. In case `r` is `True`, the chapter will be processed as a whole, including all the subchapters. In case you want to only include some parts of a chapter, you need to set `r` to `False`, and include in the list all the subchapters you want to include in the RFC draft.
 
-## Scripts
+2. `[generate_rfc]` affects to `generate_rfc.py` 
 
-### extract_docx.py
+```python
+[generate_rfc]
+output_dir=out/
+common_dir=./common/
+draft_name=draft-smith-someinterestingthing
+version=00
+output_sections = [
+    {'generated': True, 'chapter': '2_INTRODUCTION.xml', 'childs': []},
+    {'generated': False, 'chapter': 'requirements.xml', 'childs': []},
+    {'generated': True, 'chapter': '4_MI.CrossoriginPolicy.xml', 'childs': []},
+    {'generated': True, 'chapter': '5_MI.AllowCompress.xml', 'childs': []},
+    {'generated': True, 'chapter': '6_MI.ClientConnectionControl.xml', 'childs': []},
+    {'generated': True, 'chapter': '7_CONCLUSION.xml', 'childs': []},
+    {'generated': False, 'chapter': 'Security.xml', 'childs': []},
+    {'generated': False, 'chapter': 'IANA.xml', 'childs': []},
+    {'generated': False, 'chapter': 'ack.xml', 'childs': []}
+    ]
+```
 
-This script performs the initial conversion of the DOCX document into a series of XML files, one for each chapter. Run it as follows:
+- `output_dir`: The directory where the converted RFC XML file will be saved.
+- `draft_name`: The name of the file for the generated RFC XML file. It should follow the IETF rules to upload a RFCs
+- `version`: The version of the RFC you want to create. It will be used as part of the generated RFC XML filename.
+- `common_dir`: Directory that contains a list of XML files that are not generated by the `extract_xxx.py` scripts but are needed for the RFC. For example, `requirements` sections from IETF that are not in your input document but are required for a proper IETF RFC document. See below for more information
+- `output_sections`: The order in which chapters are to be inserted into the final RFC document. A JSON list of objects that have 3 properties:
+  - `generated`: A Boolean to indicate if the file to be included is a generated XML from the input document, or a common XML file
+  - `chapter`: Filename corresponding to one section to be generated in the RFC XML file
+  - `childs`: A list with the same structure of objects, in case you need to include recursively other sections as part of a main section. For instance, in a case you want to include section 2, and a section 2.1 in the RFC XML file under the first one. Only needed if you configured `chapter_process` including non-recursive chapters.
+
+
+### RFC scheleton
+
+TBD
+
+
+## Usage
+
+To convert a DOCX document to RFC XML format, you can execute the following command under the directory containing your draft `configuration.conf` file. The command will execute all scripts in the correct order. The result will be an xml file in the `output_dir` folder.
+
 
 ```bash
-python extract_docx.py -c config.json
+cd draft-smith-someinterestingthing-ietf118
+
+python3 extract_docx.py && python3 extract_diagrams.py && python3 extract_references.xml && python3 generate_rfc.py
 ```
 
-### extract_references.py
+In case any script generates an error, please check the situation. You can execute them individually if necessary.
 
-This script processes the XML files generated by `extract_docx.py` and replaces certain patterns to ensure proper referencing in the RFC XML format.
-
-### generate_rfc.py
-
-Using the various XML files generated by the previous scripts, along with generic XML files and the structure provided by `rfc_format.xml`, this script generates the final RFC XML document. Run it as follows:
-
-```bash
-python generate_rfc.py -c config.json
-```
 
 ## License
 
