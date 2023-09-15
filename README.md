@@ -105,7 +105,15 @@ TBD
 
 ## Usage
 
-To convert a DOCX document to RFC XML format, you can execute the following command under the directory containing your draft `configuration.conf` file. The command will execute all scripts in the correct order. The result will be an xml file in the `output_dir` folder.
+To convert a DOCX document to RFC XML format, you need to follow these steps:
+
+1. Copy your input DOCX file under the `work_dir` folder in your local system
+
+2. Modify the `rfc_format.xml` accordingly to your draft information
+
+3. Update the `configuration.conf` file if needed
+
+2. you can execute the following command under the directory containing your draft `configuration.conf` file. The command will execute all scripts in the correct order. The result will be an xml file in the `output_dir` folder.
 
 
 ```bash
