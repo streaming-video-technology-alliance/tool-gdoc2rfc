@@ -8,13 +8,12 @@ WARNING: This README.md has been generate by chat GPT. Until further notice, it 
 This open-source Python tool is designed to convert DOCX documents into the XML format used for publishing RFCs (Request for Comments) by the IETF (Internet Engineering Task Force). It consists of three main scripts that work together to facilitate the conversion process. The tool is distributed under the MIT License.
 
 ## Table of Contents
+- [Requirements](#requirements)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Configuration](#configuration)
-- [Scripts](#scripts)
-  - [extract_docx.py](#extract_docxpy)
-  - [extract_references.py](#extract_referencespy)
-  - [generate_rfc.py](#generate_rfcpy)
+    - [Configuration file](#configuration-file)
+    - [RFC scheleton](#rfc-scheleton)
+- [Usage](#usage)
 - [License](#license)
 - [Contributing](#contributing)
 - [Acknowledgments](#acknowledgments)
@@ -112,7 +111,10 @@ To convert a DOCX document to RFC XML format, you can execute the following comm
 ```bash
 cd draft-smith-someinterestingthing-ietf118
 
-python3 extract_docx.py && python3 extract_diagrams.py && python3 extract_references.xml && python3 generate_rfc.py
+python3 ../extract_docx.py &&  \ 
+python3 ../extract_diagrams.py && \ 
+python3 ../extract_references.py && \
+python3 ../generate_rfc.py
 ```
 
 In case any script generates an error, please check the situation. You can execute them individually if necessary.
