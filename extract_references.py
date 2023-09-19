@@ -40,6 +40,7 @@ for filename in os.listdir(location):
     filedata = filedata.replace('[CDNI-MEL]', '<xref target="CDNI-MEL" />')
     filedata = filedata.replace('[AWSv4Method]', '<xref target="AWSv4Method" />')
     filedata = filedata.replace('[X.509]', '<xref target="X.509" />')
+    filedata = filedata.replace('[HCVAULT]', '<xref target="HCVAULT" />')
     filedata = filedata.replace('[URI.signing]', '<xref target="URI.signing" />')
     filedata = filedata.replace('[W3C]', '<xref target="W3C" />')
 
