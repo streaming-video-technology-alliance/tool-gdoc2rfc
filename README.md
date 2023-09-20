@@ -51,7 +51,7 @@ To use this DOCX to RFC XML Converter, follow these steps:
 
 A sample configuration file named `configuration.conf` is included in the duplicated folder. The configuration file is common for all scripts, and is divided in sections.
 
-1. `[extract_docx]` affects to `extract_docx.py`, `extract_references.py` & `extract_diagrams.py` 
+1. `[extract_docx]` affects to `extract_docx.py`, `extract_references.py` & `extract_figures.py` 
 
 
  Here's an example configuration file:
@@ -66,6 +66,16 @@ chapters_process= [{'c':'2', 'r':False}, {'c':'2.1', 'r':False} {'c': '4', 'r':T
 - `work_directory`: The directory containing the input DOCX file and where the script will place the generated files.
 - `filename`: The name of the the input DOCX file 
 - `chapters_process`: List of chapters of the input DOCX file that will be processed. It is a json list with items that indicate the number of the chapter, and if the chapter will be processed including all its subchapters. In case `r` is `True`, the chapter will be processed as a whole, including all the subchapters. In case you want to only include some parts of a chapter, you need to set `r` to `False`, and include in the list all the subchapters you want to include in the RFC draft.
+
+```python
+[extract_diagrams]
+work_directory=figures/
+figures_process= [{'label':'Figure 1: name','filename':'figure_1.xml'},{'label':'Figure 2: name','filename':'figure_2.xml'}]
+```
+
+- `work_directory`: The directory containing the figure tags with embedded ascii-art and optional SVG art.
+- `figures_process`: List of specifiers as pairs, where `label` is the name of the figure to replace, and `filename` is the name of the figure file in the figures directory.
+
 
 2. `[generate_rfc]` affects to `generate_rfc.py` 
 
@@ -120,7 +130,7 @@ To convert a DOCX document to RFC XML format, you need to follow these steps:
 cd draft-smith-someinterestingthing-ietf118
 
 python3 ../extract_docx.py &&  \ 
-python3 ../extract_diagrams.py && \ 
+python3 ../extract_figures.py && \ 
 python3 ../extract_references.py && \
 python3 ../generate_rfc.py
 ```
