@@ -13,7 +13,7 @@ location = config['work_directory'] +'/generated-xml/' # get present working dir
 
 figures_process = []
 try:
-  config_diagrams = config_parser['extract_diagrams']
+  config_diagrams = config_parser['extract_figures']
   figure_directory =  config_diagrams['figure_directory']
   figures_process = ast.literal_eval(config_diagrams['figures_process'])
 except Exception:
