@@ -31,7 +31,9 @@ sections = ast.literal_eval(output_sections.replace('\n',''))
 
 def build_xml (section_dict):
     dir = generated_dir if section_dict['generated'] else common_dir
-    tree_chapter = ET.parse(dir + section_dict['chapter'])
+    parser = ET.XMLParser(strip_cdata=False)
+
+    tree_chapter = ET.parse(dir + section_dict['chapter'],  parser=parser)
     root_chapter = tree_chapter.getroot()
     if 'childs' in section_dict:
         for child in section_dict['childs']:
@@ -50,4 +52,4 @@ except Exception:
     pass
 
 with open(os.path.join('./'+output_dir+"/", draftname + '-' + config['version'] +'.xml')  , 'wb') as f:
-    f.write(ET.tostring(root))
+    f.write(ET.tostring(root, encoding='utf-8', method='xml'))
