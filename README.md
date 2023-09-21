@@ -1,11 +1,11 @@
-# DOCX to RFC XML Converter
+# GDOC HTML to RFC XML Converter
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
 WARNING: This README.md has been generate by chat GPT. Until further notice, it can contain incorrect information. WIP
 
 
-This open-source Python tool is designed to convert DOCX documents into the XML format used for publishing RFCs (Request for Comments) by the IETF (Internet Engineering Task Force). It consists of three main scripts that work together to facilitate the conversion process. The tool is distributed under the MIT License.
+This open-source Python tool is designed to convert HTML versions from GDOC into the XML format used for publishing RFCs (Request for Comments) by the IETF (Internet Engineering Task Force). It consists of three main scripts that work together to facilitate the conversion process. The tool is distributed under the MIT License.
 
 ## Table of Contents
 - [Requirements](#requirements)
@@ -24,7 +24,7 @@ This project requires Python 3.x >
 
 ## Installation
 
-To use this DOCX to RFC XML Converter, follow these steps:
+To use this GDOC HTML to RFC XML Converter, follow these steps:
 
 1. Clone the repository to your local machine in a working directory:
 
@@ -39,7 +39,7 @@ To use this DOCX to RFC XML Converter, follow these steps:
    pip3 install -r requirements.txt
    ```
 
-3. Duplicate `draft_sample` directory with a significative name for your draft. 
+3. In a directory of your convenience, Duplicate `draft_sample` directory with a significative name for your draft. 
 
    ```bash
    cp -pR draft-sample draft-smith-someinterestingthing-ietf118
@@ -51,8 +51,9 @@ To use this DOCX to RFC XML Converter, follow these steps:
 
 A sample configuration file named `configuration.conf` is included in the duplicated folder. The configuration file is common for all scripts, and is divided in sections.
 
-1. `[extract_docx]` affects to `extract_docx.py`, `extract_references.py` & `extract_figures.py` 
+1. `[extract_docx]` affects to `extract_html.py`, `extract_references.py` & `extract_figures.py` 
 
+NOTE that extract_docx.py is maintained for legacy drafts but it will be removed
 
  Here's an example configuration file:
 
@@ -60,13 +61,16 @@ A sample configuration file named `configuration.conf` is included in the duplic
 [extract_docx]
 work_directory=work/
 filename=sample.docx
+filename_html=sample.html
 chapters_process= [{'c':'2', 'r':False}, {'c':'2.1', 'r':False} {'c': '4', 'r':True}, {'c':'5', 'r':True}, {'c':'6', 'r':True}, {'c':'7', 'r':True}]
 ```
 
 - `work_directory`: The directory containing the input DOCX file and where the script will place the generated files.
 - `filename`: The name of the the input DOCX file 
+- `filename_html`: The name of the the input HTML file 
 - `chapters_process`: List of chapters of the input DOCX file that will be processed. It is a json list with items that indicate the number of the chapter, and if the chapter will be processed including all its subchapters. In case `r` is `True`, the chapter will be processed as a whole, including all the subchapters. In case you want to only include some parts of a chapter, you need to set `r` to `False`, and include in the list all the subchapters you want to include in the RFC draft.
 
+2. `[extract_figures]` affects to `extract_figures.py`
 ```python
 [extract_figures]
 work_directory=figures/
@@ -77,7 +81,7 @@ figures_process= [{'label':'Figure 1: name','filename':'figure_1.xml'},{'label':
 - `figures_process`: List of specifiers as pairs, where `label` is the name of the figure to replace, and `filename` is the name of the figure file in the figures directory.
 
 
-2. `[generate_rfc]` affects to `generate_rfc.py` 
+3. `[generate_rfc]` affects to `generate_rfc.py` 
 
 ```python
 [generate_rfc]
@@ -115,9 +119,9 @@ TBD
 
 ## Usage
 
-To convert a DOCX document to RFC XML format, you need to follow these steps:
+To convert a HTML GDOC document to RFC XML format, you need to follow these steps:
 
-1. Copy your input DOCX file under the `work_dir` folder in your local system
+1. Copy your input HTML file under the `work_dir` folder in your local system
 
 2. Modify the `rfc_format.xml` accordingly to your draft information
 
@@ -129,7 +133,7 @@ To convert a DOCX document to RFC XML format, you need to follow these steps:
 ```bash
 cd draft-smith-someinterestingthing-ietf118
 
-python3 ../extract_docx.py &&  \ 
+python3 ../extract_html.py &&  \ 
 python3 ../extract_figures.py && \ 
 python3 ../extract_references.py && \
 python3 ../generate_rfc.py
