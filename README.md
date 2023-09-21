@@ -68,7 +68,7 @@ chapters_process= [{'c':'2', 'r':False}, {'c':'2.1', 'r':False} {'c': '4', 'r':T
 - `chapters_process`: List of chapters of the input DOCX file that will be processed. It is a json list with items that indicate the number of the chapter, and if the chapter will be processed including all its subchapters. In case `r` is `True`, the chapter will be processed as a whole, including all the subchapters. In case you want to only include some parts of a chapter, you need to set `r` to `False`, and include in the list all the subchapters you want to include in the RFC draft.
 
 ```python
-[extract_diagrams]
+[extract_figures]
 work_directory=figures/
 figures_process= [{'label':'Figure 1: name','filename':'figure_1.xml'},{'label':'Figure 2: name','filename':'figure_2.xml'}]
 ```
