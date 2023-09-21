@@ -20,19 +20,17 @@ otherfiles = [] #list to keep any other file that do not match the criteria
 
 for filename in os.listdir(location):
     # Read in the file
-    print (filename)
+    print ('\nExtracting references for:', filename)
     with open(location + filename, 'r') as file :
       filedata = file.read()
 
-  # Replace all [RFCxxx] references
-    print ("RFC document references:")
-    print (re.findall('\[RFC(\d{4})\]', filedata))
+    # Replace all [RFCxxx] references
+    print ("RFC document references:", re.findall('\[RFC(\d{4})\]', filedata))
     pattern = r'\[RFC(\d{4})\]'
     filedata = re.sub(pattern, r'<xref target="RFC\1" />', filedata)
  
     # Replace all [SVTAxxx] references
-    print ("SVTA document references:") 
-    print (re.findall('\[SVTA(\d{4})\]', filedata))
+    print ("SVTA document references:", re.findall('\[SVTA(\d{4})\]', filedata))
     pattern = r'\[SVTA(\d{4})\]'
     filedata = re.sub(pattern, r'<xref target="SVTA\1" />', filedata)
 
@@ -43,6 +41,7 @@ for filename in os.listdir(location):
     filedata = filedata.replace('[HCVAULT]', '<xref target="HCVAULT" />')
     filedata = filedata.replace('[URI.signing]', '<xref target="URI.signing" />')
     filedata = filedata.replace('[W3C]', '<xref target="W3C" />')
+    filedata = filedata.replace('[PCRE]', '<xref target="PCRE" />')
 
     # Write the file out again
     with open(location+filename, 'w') as file:

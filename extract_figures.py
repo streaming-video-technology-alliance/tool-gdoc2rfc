@@ -17,7 +17,8 @@ try:
   figure_directory =  config_diagrams['figure_directory']
   figures_process = ast.literal_eval(config_diagrams['figures_process'])
 except Exception:
-  pass
+  print('no figure references configured')
+  exit()
 
 for filename in os.listdir(location):
     # Read in the file
