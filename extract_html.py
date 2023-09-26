@@ -44,7 +44,7 @@ def create_xml_from_chapter (chapter_doc, children=True):
     title = chapter_doc['title']
 
     xml.set('title',title_case(title))
-    xml.set('anchor',chapter_doc['title'].replace(" ","-"))
+    xml.set('anchor',chapter_doc['title'].replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(",""))
     in_list = False
     in_property = False
     in_code = False
@@ -196,7 +196,8 @@ def get_html_text(tree):
                 title = section['title']
 
                 section["xml"].set('title',title_case(title))
-                section["xml"].set('anchor',section['title'].replace(" ","-"))
+                section["xml"].set('anchor',section['title'].replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(",""))
+
                 in_property = False
                 in_code = False
 
@@ -219,36 +220,50 @@ def get_html_text(tree):
                     text_xml = ET.SubElement(section["xml"], 't')
                     text_xml.text = node.text_content().lstrip('.')
 
-        if node.tag == "ul":
+        if node.tag == "ul" or node.tag == 'ol':
             # Take the previous generated text_xml and append the list
             
             if text_xml is not None:
                 # Check style for this list and detect the nesting level
-                style_classes = node.get("class").split(" ")
-                for cls in style_classes:
-                    if cls in first_level_list or cls in second_level_list:
-                        if cls in first_level_list:
-                            if not in_list:
-                                in_list = True
-                                # This is the first list after some text.
-                                last_list = ET.SubElement(section["xml"],'ul')
-                            else:
-                                # WE got an element of a previous list, formatted as ul
-                                # get the parent of the parent to return back to the main list 
-                                # and insert this as an li element of that
-                                last_list = last_list.getparent().getparent()
-                        elif cls in second_level_list:
-                            last_list = ET.SubElement(last_list_item,'ul')
+                if node.tag == 'ul':
+                    # This only applies to unordered lists.
+                    style_classes = node.get("class").split(" ")
+                    for cls in style_classes:
+                        if cls in first_level_list or cls in second_level_list:
+                            if cls in first_level_list:
+                                if not in_list:
+                                    in_list = True
+                                    # This is the first list after some text.
+                                    last_list = ET.SubElement(section["xml"],'ul')
+                                else:
+                                    # WE got an element of a previous list, formatted as ul
+                                    # get the parent of the parent to return back to the main list 
+                                    # and insert this as an li element of that
+                                    last_list = last_list.getparent().getparent()
+                            elif cls in second_level_list:
+                                last_list = ET.SubElement(last_list_item,'ul')
 
-                        for lis in node.getchildren():
-                            if lis.tag == 'li':
-                                last_list_item = ET.SubElement(last_list,'li')
-                                text = ET.SubElement(last_list_item,"t")
-                                text.text = lis.text_content()
-                                text.text = text.text.replace('\xa0',' ')
-                                text.text = text.text.replace('”','"')
-                                text.text = text.text.replace('“','"')
-                                text.text = text.text.replace('’',"'")
+                            for lis in node.getchildren():
+                                if lis.tag == 'li':
+                                    last_list_item = ET.SubElement(last_list,'li')
+                                    text = ET.SubElement(last_list_item,"t")
+                                    text.text = lis.text_content()
+                                    text.text = text.text.replace('\xa0',' ')
+                                    text.text = text.text.replace('”','"')
+                                    text.text = text.text.replace('“','"')
+                                    text.text = text.text.replace('’',"'")
+                else:
+                    ol = ET.SubElement(section["xml"],'ol')
+                    for lis in node.getchildren():
+                        if lis.tag == 'li':
+                            last_list_item = ET.SubElement(ol,'li')
+                            text = ET.SubElement(last_list_item,"t")
+                            text.text = lis.text_content()
+                            text.text = text.text.replace('\xa0',' ')
+                            text.text = text.text.replace('”','"')
+                            text.text = text.text.replace('“','"')
+                            text.text = text.text.replace('’',"'")
+
 
         def parse_table_tr(tr, destination, c_tag="td"):
             # Get the columns in this row
