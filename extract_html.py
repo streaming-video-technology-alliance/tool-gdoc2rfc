@@ -277,35 +277,39 @@ def get_html_text(tree):
                 artwork_section = ET.SubElement(figure_section,'sourcecode')
 
                 # Try to get the content formatted correctly (somehow)
-                def get_code_text(text, element):
-                    for child in element.getchildren():
-                        if child.text:
-                            tmpText = child.text
-                        else:
-                            tmpText = ''
-                        
-                        for subelem in child.getchildren():
-                        # if child.getchildren():
-                            for ch in ET.tostring(subelem):
-                                if ch == b'\xa0':
-                                    tmpText = tmpText + '\n'
-                                elif ch == b'\xc2':
-                                    tmpText = tmpText + '\t'
-                                elif ch == b'\x201c':
-                                    True
-                                    # TODO: Fix quote symbols
-                                else:
-                                    tmpText = tmpText + chr(ch)
+                def get_code_text(text, lines):
+                    text = ''
+                    for element in lines:
+                        if text != '':
+                            text = text + '\n'
+                        for child in element.getchildren():
+                            if child.text:
+                                tmpText = child.text
+                            else:
+                                tmpText = ''
                             
-                        tmpText = tmpText.replace("<br/>","\n")
-                        tmpText = tmpText.replace(u'&#160;', u' ')
-                        tmpText = tmpText.replace('&lt;','<');
-                        tmpText = tmpText.replace('&gt;','>');
+                            for subelem in child.getchildren():
+                            # if child.getchildren():
+                                for ch in ET.tostring(subelem):
+                                    if ch == b'\xa0':
+                                        tmpText = tmpText + '\n'
+                                    elif ch == b'\xc2':
+                                        tmpText = tmpText + '\t'
+                                    elif ch == b'\x201c':
+                                        True
+                                        # TODO: Fix quote symbols
+                                    else:
+                                        tmpText = tmpText + chr(ch)
+                                
+                            tmpText = tmpText.replace("<br/>","\n")
+                            tmpText = tmpText.replace(u'&#160;', u' ')
+                            tmpText = tmpText.replace('&lt;','<');
+                            tmpText = tmpText.replace('&gt;','>');
 
-                        text = text + tmpText
+                            text = text + tmpText
 
                     return text
-                artwork_section.text = ET.CDATA( get_code_text("",node.findall("tr")[0].find('td').find('p')))
+                artwork_section.text = ET.CDATA( get_code_text("",node.findall("tr")[0].find('td').findall('p')))
 
             else:
 
