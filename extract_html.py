@@ -179,7 +179,7 @@ def get_html_text(tree):
             True
 
         # Remove all the sup tags that are comments in the GDOC document
-        for sup in node.findall('*/sup'):
+        for sup in node.findall('.//sup'):
             sup.getparent().remove(sup)
 
         # Chapter titles
