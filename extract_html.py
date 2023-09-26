@@ -178,6 +178,10 @@ def get_html_text(tree):
         if node.tag != "span":
             True
 
+        # Remove all the sup tags that are comments in the GDOC document
+        for sup in node.findall('*/sup'):
+            sup.getparent().remove(sup)
+
         # Chapter titles
         if node.tag == "h1" or node.tag == "h2" or node.tag == "h3" or node.tag == "h4" or node.tag == "h5":
             in_list = False
