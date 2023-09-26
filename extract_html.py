@@ -205,10 +205,15 @@ def get_html_text(tree):
             # this is a paragraph as <t>
             if section:
                 tmpText = node.text_content()
-                tmpText = tmpText.replace('\xa0',' ')
-                section['text'].append(tmpText)
-                text_xml = ET.SubElement(section["xml"], 't')
-                text_xml.text = node.text_content().lstrip('.')
+                if tmpText != '':
+                    tmpText = tmpText.replace('\xa0',' ')
+                    tmpText = tmpText.replace('”','"')
+                    tmpText = tmpText.replace('“','"')
+                    tmpText = tmpText.replace('’',"'")
+                    
+                    section['text'].append(tmpText)
+                    text_xml = ET.SubElement(section["xml"], 't')
+                    text_xml.text = node.text_content().lstrip('.')
 
         if node.tag == "ul":
             # Take the previous generated text_xml and append the list
@@ -236,6 +241,10 @@ def get_html_text(tree):
                                 last_list_item = ET.SubElement(last_list,'li')
                                 text = ET.SubElement(last_list_item,"t")
                                 text.text = lis.text_content()
+                                text.text = text.text.replace('\xa0',' ')
+                                text.text = text.text.replace('”','"')
+                                text.text = text.text.replace('“','"')
+                                text.text = text.text.replace('’',"'")
 
         def parse_table_tr(tr, destination, c_tag="td"):
             # Get the columns in this row
@@ -282,6 +291,9 @@ def get_html_text(tree):
                                     tmpText = tmpText + '\n'
                                 elif ch == b'\xc2':
                                     tmpText = tmpText + '\t'
+                                elif ch == b'\x201c':
+                                    True
+                                    # TODO: Fix quote symbols
                                 else:
                                     tmpText = tmpText + chr(ch)
                             

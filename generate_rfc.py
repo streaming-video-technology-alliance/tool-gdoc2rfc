@@ -3,7 +3,6 @@
 @authors: SVTA Open Caching Working Group people
 @license: MIT-license
 """
-
 import os
 from lxml import etree as ET
 import configparser 
@@ -17,13 +16,22 @@ draftname = config['draft_name']
 output_dir = config['output_dir']
 output_sections = config['output_sections']
 
+event_types = ("start", "end", "comment", "pi")
+
+# Using readlines()
+file1 = open('rfc_format.xml', 'r')
+lines = file1.readlines()
 
 
-#FILENAME = 'draft-rosenblum-cdni-protected-secrets-metadata-00.xml'
-tree = ET.parse('./rfc_format.xml')
-root = tree.getroot()
+def sections2text():
+    xmlText = '';
 
-middle = root.find('middle')
+    for section in sections:
+        section_xml = build_xml (section)
+        
+        xmlText = xmlText + ET.tostring(section_xml,  encoding='utf-8', method='xml').decode('utf-8')
+
+    return xmlText
 
 generated_dir = config_parser['extract_docx']['work_directory'] + 'generated-xml/'
 common_dir = config['common_dir']
@@ -41,15 +49,24 @@ def build_xml (section_dict):
             root_chapter.append(child_xml)
     return root_chapter
 
-for section in sections:
-    section_xml = build_xml (section)
-    
-    middle.append(section_xml)
+
+# Strips the newline character
+text_xml = '';
+
+for line in lines:
+    if '<middle>' in line:
+        text_xml = text_xml + "<middle>\n"+ sections2text()
+    else:
+        text_xml = text_xml + line;
+
 
 try:
     os.mkdir('./'+output_dir)
 except Exception:
     pass
 
-with open(os.path.join('./'+output_dir+"/", draftname + '-' + config['version'] +'.xml')  , 'wb') as f:
-    f.write(ET.tostring(root, encoding='utf-8', method='xml'))
+
+
+with open(os.path.join('./'+output_dir+"/", draftname + '-' + config['version'] +'.xml')  , 'w') as f:
+    #f.write(ET.tostring(root, encoding='utf-8', method='xml',  xml_declaration=True))
+    f.write(text_xml)
