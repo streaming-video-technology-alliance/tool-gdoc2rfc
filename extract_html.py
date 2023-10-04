@@ -38,13 +38,13 @@ def title_case(title):
 
     return title.title()
 
+def anchor_this(text):
+    return text.replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(","")
 
 def create_xml_from_chapter (chapter_doc, children=True):
     xml = ET.Element("section")
     title = chapter_doc['title']
 
-    xml.set('title',title_case(title))
-    xml.set('anchor',chapter_doc['title'].replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(",""))
     in_list = False
     in_property = False
     in_code = False
@@ -61,7 +61,7 @@ def create_xml_from_chapter (chapter_doc, children=True):
     return xml
 
 
-def save_sections (xml_object, chapter='', recursive=False):
+def save_sections (xml_object, chapter='', recursive=False, filename=None):
     # create directory for xml results
     mydate_str = datetime.datetime.now().strftime("%m-%d-%Y")
 
@@ -78,14 +78,17 @@ def save_sections (xml_object, chapter='', recursive=False):
         for miobject in xml_object.iter('section'):
             xmltext = ET.tostring(miobject, pretty_print = True, encoding='utf-8', method='xml')
 
-            filename = miobject.attrib['anchor'];
+            if not filename:
+                filename = miobject.attrib['anchor'];
             with open(os.path.join(subdirectory, chapter + filename+".xml")  , 'wb') as f:
                 f.write(xmltext)
                 print (chapter + filename+".xml")
     else:
         xmltext = ET.tostring(xml_object, pretty_print = True, encoding='utf-8', method='xml')
 
-        filename = xml_object.attrib['anchor'];
+        if not filename:
+            filename = miobject.attrib['anchor'];
+
         with open(os.path.join(subdirectory, chapter + filename+".xml")  , 'wb') as f:
             f.write(xmltext)
             print (chapter + filename+".xml")
@@ -135,6 +138,14 @@ def get_doc_tree (sections):
 
 def process_text (text):
     #Replace some situations in text. For instance, REFERENCES
+    return text
+
+def encode_text (text):
+    text = text.replace('\xa0',' ')
+    text = text.replace('”','"')
+    text = text.replace('“','"')
+    text = text.replace('’',"'")
+
     return text
 
 def get_html_text(tree):
@@ -195,8 +206,14 @@ def get_html_text(tree):
                 section["xml"] =  ET.Element("section")
                 title = section['title']
 
-                section["xml"].set('title',title_case(title))
-                section["xml"].set('anchor',section['title'].replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(",""))
+                # title attribute is deprecated for sections. Let's be future-proof with the name tag
+                name = ET.SubElement(section["xml"],'name')
+                name.text = title_case(title)
+
+                # section["xml"].set('title',title_case(title))
+
+                # In older versions, the anchor was a transformation of the title. Now we use the HTML id, so it can be linked
+                section["xml"].set('anchor',node.get('id'))
 
                 in_property = False
                 in_code = False
@@ -211,10 +228,7 @@ def get_html_text(tree):
             if section:
                 tmpText = node.text_content()
                 if tmpText != '':
-                    tmpText = tmpText.replace('\xa0',' ')
-                    tmpText = tmpText.replace('”','"')
-                    tmpText = tmpText.replace('“','"')
-                    tmpText = tmpText.replace('’',"'")
+                    tmpText = encode_text(tmpText)
                     
                     section['text'].append(tmpText)
                     text_xml = ET.SubElement(section["xml"], 't')
@@ -243,27 +257,70 @@ def get_html_text(tree):
                             elif cls in second_level_list:
                                 last_list = ET.SubElement(last_list_item,'ul')
 
+
+                            def get_text_content (elem, text_blocks=None):
+                                text = ""
+
+                                if text_blocks is None:
+                                    text_blocks = []
+                                
+                                if elem.findall('*/a') or elem.findall('a'):
+                                    # Check if this element includes an internal link
+                                    for e in elem.getchildren():
+                                        if e.tag == 'a':
+                                            # Check if this is an internal link
+                                            if e.attrib['href'].startswith('#'):
+                                                # This is an internal link. So we need to set an xref
+                                                text = text + e.text_content()
+                                                text_blocks.append({"ref": True, "text": e.text_content(), 'href': e.attrib['href']})
+                                            else:
+                                                text = text + e.text_content()
+                                                text_blocks.append({"ref": False, "text": e.text_content()})
+                                        else:
+                                            get_text_content(e,text_blocks)
+                                else:
+                                    text_blocks.append({"ref": False, "text": elem.text_content()})
+                                    # return elem.text_content()
+                                    return text_blocks
+
+                                #print (text_blocks)
+                                return text_blocks
+                                #return text
+
                             for lis in node.getchildren():
                                 if lis.tag == 'li':
                                     last_list_item = ET.SubElement(last_list,'li')
                                     text = ET.SubElement(last_list_item,"t")
-                                    text.text = lis.text_content()
-                                    text.text = text.text.replace('\xa0',' ')
-                                    text.text = text.text.replace('”','"')
-                                    text.text = text.text.replace('“','"')
-                                    text.text = text.text.replace('’',"'")
+                                    # This version analyzes the tags to find internal links
+                                    # If there are, it will append xref tags to the anchors
+                                    # Using lxm is somehow difficult to add tags in the middle of a <t> tag
+                                    # we need to control if we are tail or not.
+
+                                    text_array = get_text_content(lis)
+                                    
+                                    tmpText = ""
+                                    tail = None
+                                    text.text = ''
+                                    for i in text_array:
+                                        if not i['ref']:
+                                            if tail is not None:
+                                                tail.tail = tail.tail + encode_text(i['text'])
+                                            else:
+                                                text.text = text.text + encode_text(i['text'])
+                                        else:
+                                            xref = ET.SubElement(text,'xref')
+                                            xref.text = encode_text(i['text'])
+                                            xref.attrib['target']=i['href'][1:]
+                                            tail = xref
+                                            tail.tail = ''
+
                 else:
                     ol = ET.SubElement(section["xml"],'ol')
                     for lis in node.getchildren():
                         if lis.tag == 'li':
                             last_list_item = ET.SubElement(ol,'li')
                             text = ET.SubElement(last_list_item,"t")
-                            text.text = lis.text_content()
-                            text.text = text.text.replace('\xa0',' ')
-                            text.text = text.text.replace('”','"')
-                            text.text = text.text.replace('“','"')
-                            text.text = text.text.replace('’',"'")
-
+                            text.text = encode_text(lis.text_content())
 
         def parse_table_tr(tr, destination, c_tag="td"):
             # Get the columns in this row
@@ -373,4 +430,5 @@ if doc_tree:
         chapter_doc = extract_chapter(doc_tree, chapter['c'])
         if chapter_doc:
             xml_rfc = create_xml_from_chapter(chapter_doc, recursive)
-            save_sections(xml_rfc, chapter['c'])
+            #Pass the title as in previous versions
+            save_sections(xml_rfc, chapter['c'], filename=anchor_this(chapter_doc['title']))
