@@ -145,8 +145,59 @@ def encode_text (text):
     text = text.replace('”','"')
     text = text.replace('“','"')
     text = text.replace('’',"'")
+    text = text.lstrip('.')
 
     return text
+
+def get_text_content (elem, text_blocks=None):
+    text = ""
+
+    if text_blocks is None:
+        text_blocks = []
+    
+    if elem.findall('*/a') or elem.findall('a'):
+        # Check if this element includes an internal link
+        for e in elem.getchildren():
+            if e.tag == 'a':
+                # Check if this is an internal link
+                if e.attrib['href'].startswith('#'):
+                    # This is an internal link. So we need to set an xref
+                    text = text + e.text_content()
+                    text_blocks.append({"ref": True, "text": e.text_content(), 'href': e.attrib['href']})
+                else:
+                    text = text + e.text_content()
+                    text_blocks.append({"ref": False, "text": e.text_content()})
+            else:
+                get_text_content(e,text_blocks)
+    else:
+        text_blocks.append({"ref": False, "text": elem.text_content()})
+        return text_blocks
+
+    return text_blocks
+
+# This version analyzes the tags to find internal links
+# If there are, it will append xref tags to the anchors
+# Using lxm is somehow difficult to add tags in the middle of a <t> tag
+# we need to control if we are tail or not.
+
+def generate_internal_refs(lis, text):
+    text_array = get_text_content(lis)
+    
+    tmpText = ""
+    tail = None
+    text.text = ''
+    for i in text_array:
+        if not i['ref']:
+            if tail is not None:
+                tail.tail = tail.tail + encode_text(i['text'])
+            else:
+                text.text = text.text + encode_text(i['text'])
+        else:
+            xref = ET.SubElement(text,'xref')
+            xref.text = encode_text(title_case(i['text']))
+            xref.attrib['target']=i['href'][1:]
+            tail = xref
+            tail.tail = ''
 
 def get_html_text(tree):
     paragraphs = []
@@ -232,7 +283,9 @@ def get_html_text(tree):
                     
                     section['text'].append(tmpText)
                     text_xml = ET.SubElement(section["xml"], 't')
-                    text_xml.text = node.text_content().lstrip('.')
+#                    text_xml.text = node.text_content().lstrip('.')
+
+                    generate_internal_refs(node,text_xml)
 
         if node.tag == "ul" or node.tag == 'ol':
             # Take the previous generated text_xml and append the list
@@ -257,62 +310,12 @@ def get_html_text(tree):
                             elif cls in second_level_list:
                                 last_list = ET.SubElement(last_list_item,'ul')
 
-
-                            def get_text_content (elem, text_blocks=None):
-                                text = ""
-
-                                if text_blocks is None:
-                                    text_blocks = []
-                                
-                                if elem.findall('*/a') or elem.findall('a'):
-                                    # Check if this element includes an internal link
-                                    for e in elem.getchildren():
-                                        if e.tag == 'a':
-                                            # Check if this is an internal link
-                                            if e.attrib['href'].startswith('#'):
-                                                # This is an internal link. So we need to set an xref
-                                                text = text + e.text_content()
-                                                text_blocks.append({"ref": True, "text": e.text_content(), 'href': e.attrib['href']})
-                                            else:
-                                                text = text + e.text_content()
-                                                text_blocks.append({"ref": False, "text": e.text_content()})
-                                        else:
-                                            get_text_content(e,text_blocks)
-                                else:
-                                    text_blocks.append({"ref": False, "text": elem.text_content()})
-                                    # return elem.text_content()
-                                    return text_blocks
-
-                                #print (text_blocks)
-                                return text_blocks
-                                #return text
-
                             for lis in node.getchildren():
                                 if lis.tag == 'li':
                                     last_list_item = ET.SubElement(last_list,'li')
                                     text = ET.SubElement(last_list_item,"t")
-                                    # This version analyzes the tags to find internal links
-                                    # If there are, it will append xref tags to the anchors
-                                    # Using lxm is somehow difficult to add tags in the middle of a <t> tag
-                                    # we need to control if we are tail or not.
 
-                                    text_array = get_text_content(lis)
-                                    
-                                    tmpText = ""
-                                    tail = None
-                                    text.text = ''
-                                    for i in text_array:
-                                        if not i['ref']:
-                                            if tail is not None:
-                                                tail.tail = tail.tail + encode_text(i['text'])
-                                            else:
-                                                text.text = text.text + encode_text(i['text'])
-                                        else:
-                                            xref = ET.SubElement(text,'xref')
-                                            xref.text = encode_text(i['text'])
-                                            xref.attrib['target']=i['href'][1:]
-                                            tail = xref
-                                            tail.tail = ''
+                                    generate_internal_refs(lis,text)
 
                 else:
                     ol = ET.SubElement(section["xml"],'ol')
