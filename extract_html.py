@@ -426,9 +426,8 @@ get_html_text(tree)
 doc_tree = get_doc_tree(sections)
 if doc_tree:
     for chapter in chapters_process:
-        recursive = False
-        if 'r' in chapter:
-            recursive = True
+
+        recursive = chapter['r']
 
         chapter_doc = extract_chapter(doc_tree, chapter['c'])
         if chapter_doc:
