@@ -32,11 +32,18 @@ sections_list = {}
 def title_case(title):
     
     for word in title.split(" "):
-        for exclusion in ["MI","FCI","UCDN", "DCDN", "uCDN", "dCDN"]:
+        for exclusion in ["MI.","FCI.","UCDN", "DCDN", "uCDN", "dCDN"]:
             if exclusion in word:
                 return title
 
-    return title.title()
+    new_title = title
+    new_title = new_title.title()
+
+    # Keep certain words all caps
+    new_title = new_title.replace("Cdni", "CDNI")
+    new_title = new_title.replace("Fci", "FCI")
+    new_title = new_title.replace("Bnf", "BNF")
+    return new_title
 
 def anchor_this(text):
     return text.replace(" ","-").replace(">","").replace("<","").replace(":","").replace(")","").replace("(","")
