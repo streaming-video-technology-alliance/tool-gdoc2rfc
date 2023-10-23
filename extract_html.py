@@ -30,9 +30,10 @@ sections_list = {}
 
 
 def title_case(title):
-    
+
     for word in title.split(" "):
-        for exclusion in ["MI.","FCI.","UCDN", "DCDN", "uCDN", "dCDN"]:
+        for exclusion in ["MI.","FCI.","UCDN", "DCDN", "uCDN", "dCDN", "JSON",
+                          "CSV", "c-", "s-", "cs-", "sc-", "ccid", "timestamp-"]:
             if exclusion in word:
                 return title
 
@@ -55,7 +56,7 @@ def create_xml_from_chapter (chapter_doc, children=True):
     in_list = False
     in_property = False
     in_code = False
-    
+
     #Main XML for this chapter
     xml = chapter_doc['xml']
 
@@ -121,7 +122,7 @@ def extract_chapter_info(text):
     return { "chapter": chapter,
              "title": title ,
              "sections": {},
-             "text": [], 
+             "text": [],
              "xml": None}
 
 def get_doc_tree (sections):
@@ -161,7 +162,7 @@ def get_text_content (elem, text_blocks=None):
 
     if text_blocks is None:
         text_blocks = []
-    
+
     if elem.findall('*/a') or elem.findall('a'):
         # Check if this element includes an internal link
         for e in elem.getchildren():
@@ -189,7 +190,7 @@ def get_text_content (elem, text_blocks=None):
 
 def generate_internal_refs(lis, text):
     text_array = get_text_content(lis)
-    
+
     tmpText = ""
     tail = None
     text.text = ''
@@ -229,7 +230,7 @@ def get_html_text(tree):
                  for k,v in list_styles
                  if v == 'content:"o  "']
 
-    code_style_classes = [k 
+    code_style_classes = [k
                           for k,v in list_code_styles
                           if 'background-color' in v and 'f8f8f8' in v ]
 
@@ -287,7 +288,7 @@ def get_html_text(tree):
                 tmpText = node.text_content()
                 if tmpText != '':
                     tmpText = encode_text(tmpText)
-                    
+
                     section['text'].append(tmpText)
                     text_xml = ET.SubElement(section["xml"], 't')
 #                    text_xml.text = node.text_content().lstrip('.')
@@ -296,7 +297,7 @@ def get_html_text(tree):
 
         if node.tag == "ul" or node.tag == 'ol':
             # Take the previous generated text_xml and append the list
-            
+
             if text_xml is not None:
                 # Check style for this list and detect the nesting level
                 if node.tag == 'ul':
@@ -311,7 +312,7 @@ def get_html_text(tree):
                                     last_list = ET.SubElement(section["xml"],'ul')
                                 else:
                                     # WE got an element of a previous list, formatted as ul
-                                    # get the parent of the parent to return back to the main list 
+                                    # get the parent of the parent to return back to the main list
                                     # and insert this as an li element of that
                                     last_list = last_list.getparent().getparent()
                             elif cls in second_level_list:
@@ -336,7 +337,7 @@ def get_html_text(tree):
             # Get the columns in this row
             # Clean the text and tags
             tr_xml = ET.SubElement(destination,'tr')
-            
+
             for td in tr.findall('td'):
                 td_xml = ET.SubElement(tr_xml, c_tag)
                 td_xml.text = td.text_content()
@@ -373,7 +374,7 @@ def get_html_text(tree):
                                 tmpText = child.text
                             else:
                                 tmpText = ''
-                            
+
                             for subelem in child.getchildren():
                             # if child.getchildren():
                                 for ch in ET.tostring(subelem):
@@ -386,7 +387,7 @@ def get_html_text(tree):
                                         # TODO: Fix quote symbols
                                     else:
                                         tmpText = tmpText + chr(ch)
-                                
+
                             tmpText = tmpText.replace("<br/>","\n")
                             tmpText = tmpText.replace(u'&#160;', u' ')
                             tmpText = tmpText.replace('&lt;','<');
@@ -406,7 +407,7 @@ def get_html_text(tree):
                     trs = node.findall('tr')
                     thead_xml = ET.SubElement(table_xml, 'thead')
                     parse_table_tr(trs[0], thead_xml,'th')
-                    
+
                     tbody_xml = ET.SubElement(table_xml, 'tbody')
                     for cnt in range(1,len(trs)):
                         parse_table_tr(trs[cnt], tbody_xml)
