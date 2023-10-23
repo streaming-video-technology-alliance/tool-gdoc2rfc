@@ -224,7 +224,7 @@ def get_html_text(tree):
 
     first_level_list = [k
                  for k,v in list_styles
-                 if v == 'content:"\\0025ba   "' or v == 'content:"\\0025cf   "']
+                 if v == 'content:"\\0025ba   "' or v == 'content:"\\0025cf   "' or v == 'content:"\\0025b6   "']
 
     second_level_list = [k
                  for k,v in list_styles
