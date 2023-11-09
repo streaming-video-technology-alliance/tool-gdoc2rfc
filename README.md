@@ -20,7 +20,7 @@ This open-source Python tool is designed to convert HTML versions from GDOC into
 
 ## Requirements
 
-This project requires Python 3.x >
+This project requires Python 3.x 
 
 ## Installation
 
@@ -53,20 +53,17 @@ A sample configuration file named `configuration.conf` is included in the duplic
 
 1. `[extract_docx]` affects to `extract_html.py`, `extract_references.py` & `extract_figures.py` 
 
-NOTE that extract_docx.py is maintained for legacy drafts but it will be removed
 
  Here's an example configuration file:
 
 ```python
 [extract_docx]
 work_directory=work/
-filename=sample.docx
 filename_html=sample.html
 chapters_process= [{'c':'2', 'r':False}, {'c':'2.1', 'r':False} {'c': '4', 'r':True}, {'c':'5', 'r':True}, {'c':'6', 'r':True}, {'c':'7', 'r':True}]
 ```
 
 - `work_directory`: The directory containing the input DOCX file and where the script will place the generated files.
-- `filename`: The name of the the input DOCX file 
 - `filename_html`: The name of the the input HTML file 
 - `chapters_process`: List of chapters of the input DOCX file that will be processed. It is a json list with items that indicate the number of the chapter, and if the chapter will be processed including all its subchapters. In case `r` is `True`, the chapter will be processed as a whole, including all the subchapters. In case you want to only include some parts of a chapter, you need to set `r` to `False`, and include in the list all the subchapters you want to include in the RFC draft.
 
@@ -125,7 +122,7 @@ To convert a HTML GDOC document to RFC XML format, you need to follow these step
 
 2. Modify the `rfc_format.xml` accordingly to your draft information
 
-3. Update the `configuration.conf` file if needed
+3. Update the `configuration.conf` file if needed, adding the filename of the html document, and the chapters to export into the draft.
 
 2. you can execute the following command under the directory containing your draft `configuration.conf` file. The command will execute all scripts in the correct order. The result will be an xml file in the `output_dir` folder.
 
@@ -152,5 +149,5 @@ We welcome contributions from the community. If you have suggestions, feature re
 
 ## Acknowledgments
 
-- This project is inspired by the need to automate the conversion of DOCX documents into RFC XML format for IETF RFC publications.
+- This project is inspired by the need to automate the conversion of html versions of Google Docs documents into RFC XML v3 format for IETF RFC publications.
 - We would like to thank the open-source community for their contributions and support in developing this tool.
