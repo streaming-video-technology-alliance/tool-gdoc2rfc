@@ -1,19 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
-<?rfc toc="yes"?>
-<?rfc tocompact="yes"?>
-<?rfc tocdepth="4"?>
-<?rfc tocindent="yes"?>
-<?rfc symrefs="yes"?>
-<?rfc sortrefs="yes"?>
-<?rfc comments="yes"?>
-<?rfc inline="yes"?>
-<?rfc compact="yes"?>
-<rfc category="std" docName="draft-siloniz-cdni-edge-control-metadata-01" ipr="trust200902">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="rfc7991bis.rnc"?> 
+
+<!DOCTYPE rfc [
+  <!ENTITY nbsp    "&#160;">
+  <!ENTITY zwsp   "&#8203;">
+  <!ENTITY nbhy   "&#8209;">
+  <!ENTITY wj     "&#8288;">
+]>
+
+<rfc
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  category="std"
+  consensus="true"
+  ipr="trust200902"
+  obsoletes=""
+  updates=""
+  submissionType="IETF"
+  xml:lang="en"
+  version="3"
+  tocInclude="true"
+  tocDepth="5"
+  symRefs="true"
+  sortRefs="true"
+  docName="draft-smith-someinterestingthing-00"
+>
    <front>
-      <title abbrev="CDNI Edge Control Metadata">CDNI Edge Control Metadata</title>
-      <author initials="A." surname="Siloniz" fullname="Alfonso Siloniz">
-         <organization>Telefonica</organization>
+      <title abbrev="Some Interesting Thing">Some Interesting Thing</title>
+      <author initials="A." surname="Smith" fullname="Alan Smith">
+         <organization>Acme</organization>
          <address>
             <postal>
                <street />
@@ -22,22 +36,9 @@
                <code />
                <country>Spain</country>
             </postal>
-            <email>alfonsosiloniz@gmail.com</email>
+            <email>alan.smith@acme.xyz</email>
          </address>
       </author>      
-      <author fullname="Glenn Goldstein" initials="G." surname="Goldstein">
-         <organization>Lumen Technologies</organization>
-         <address>
-            <postal>
-               <street />
-               <city />
-               <region />
-               <code />
-               <country>US</country>
-            </postal>
-            <email>glenng1215@gmail.com</email>
-         </address>
-      </author>
       <date />
       <abstract>
          <t>
@@ -49,9 +50,7 @@ CDNs typically require a set of configuration metadata to provide directives for
    </middle>
    <back>
       <references title="Normative References">
-         <?rfc include="reference.RFC.9110"?>
-         <?rfc include="reference.RFC.8006"?>
-         <?rfc include="reference.RFC.2119"?>
+         <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
       </references>
       <references title="Informative References">
          <reference anchor="SVTA" target="https://www.svta.org">
@@ -61,49 +60,6 @@ CDNs typically require a set of configuration metadata to provide directives for
                <date />
             </front>
          </reference>
-         <reference anchor="SVTA2032" target="https://svta.org/documents/SVTA2032">
-            <front>
-               <title> Processing Stages Metadata Specification</title>
-               <author initials="G." surname="Goldstein" fullname="Glenn Goldstein" role="editor">
-                  <organization>Lumen Technologies</organization>
-               </author>
-               <author initials="P." surname="Chaudhari" fullname="Pankaj Chaudhari">
-                  <organization>Disney Streaming Services</organization>
-               </author>
-               <author initials="W." surname="Power" fullname="William Power">
-                  <organization>Lumen Technologies</organization>
-               </author>
-               <author initials="Y." surname="Gressel" fullname="Yoav Gressel">
-                  <organization>Qwilt</organization>
-               </author>
-               <author initials="A." surname="Warshavsky" fullname="Arnon Warshavsky">
-                  <organization>Qwilt</organization>
-               </author>
-               <date day="2" month="July" year="2021" />
-            </front>
-         </reference>
-         <reference anchor="SVTA2031" target="https://svta.org/documents/SVTA2031">
-            <front>
-               <title>Metadata Model Expression Language (MEL) Specification</title>
-               <author initials="G." surname="Goldstein" fullname="Glenn Goldstein" role="editor">
-                  <organization>Lumen Technologies</organization>
-               </author>
-               <author initials="P." surname="Chaudhari" fullname="Pankaj Chaudhari">
-                  <organization>Disney Streaming Services</organization>
-               </author>
-               <author initials="W." surname="Power" fullname="William Power">
-                  <organization>Lumen Technologies</organization>
-               </author>
-               <author initials="Y." surname="Gressel" fullname="Yoav Gressel">
-                  <organization>Qwilt</organization>
-               </author>
-               <author initials="A." surname="Warshavsky" fullname="Arnon Warshavsky">
-                  <organization>Qwilt</organization>
-               </author>
-               <date day="2" month="July" year="2021" />
-            </front>
-         </reference>   
-
       </references>
    </back>
 </rfc>

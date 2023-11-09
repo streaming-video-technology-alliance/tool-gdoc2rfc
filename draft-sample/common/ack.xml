@@ -1,20 +1,9 @@
-        <section anchor="Acknowledgements" title="Acknowledgements">
-            <t>
-                The authors would like to express their gratitude to the members of the Streaming Video Technology Alliance <xref target="SVTA"/> Open Caching Working Group for their guidance / contribution / reviews ...)
-            </t>
-            <t>
-                Particulary the following people contribute in one or other way to the content of this draft:
-                <list>
-                    <t>Guillaume Bichot - Broadpeak </t>
-                    <t>Christoph Neumann - Broadpeak </t>
-                    <t>Pankaj Chaudhari - Disney Streaming Services</t>
-                    <t>Rajeev RK - picoNETS</t>
-                    <t>Yoav Gressel - Qwilt</t>
-                    <t>Arnon Warshavsky - QWilt</t>
-                    <t>Shmuel Asafi  . Qwilt</t>
-                    <t>Nir Sopher - Qwilt</t>
-                    <t>Arnon Warshavsky - Qwilt</t>
-                    <t>Ben Rosenblum - Vecima</t>
-                </list>
-            </t>
-        </section>   
+<section anchor="Acknowledgements" title="Acknowledgements">
+    <t>
+        The authors would like to express their gratitude to the members of the Streaming Video Technology Alliance <xref target="SVTA"/> Open Caching Working Group for their guidance / contribution / reviews ...)
+    </t>
+    <t>Particulary the following people contribute in one or other way to the content of this draft:</t>
+        <ul>
+            <li>Person 1 (Company 1)</li>
+        </ul>
+</section>

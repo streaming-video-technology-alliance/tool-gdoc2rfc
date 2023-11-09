@@ -111,7 +111,18 @@ output_sections = [
 
 ### RFC scheleton
 
-TBD
+`generate_rfc.py` script outputs an XML file based in IETF [RFC7991](https://datatracker.ietf.org/doc/rfc7991/), "The "xml2rfc" Version 3 Vocabulary", using the extracted text from the HTML file.
+
+To build up the XML documents, it needs a specific XML scheleton including XML definitions and processing instructions. This is the mean of the `rfc_format.xml` file that is needed at the same level of `configuration.conf` file. This sample XML scheleton includes all the required elements for the draft to exists. The `generate_rfc.py` script takes this scheleton, and it fills the `<middle></middle>` node in it with the context extracted from the HTML document.
+
+That means you need to manually modify the scheleton `rfc_format.xml` according to your draft. Specifically you should:
+- Modify the `docName` property in the `rfc` tag  with the draft name and version: i.e.: `draft-smith-someinterestingthing-ietf118-00`
+- Modify the `<title>` tag with the correct `abrev` property and value. i.e.: <br>
+  ```<title abbrev="CDNI Edge Control Metadata">CDNI Edge Control Metadata</title>``` 
+
+- Modify `<author>` node. Add as many `author` nodes as needed
+- Modify the `<abstract>` node as needed
+- Modify both the Normative References and Informative References. Add as many as required
 
 
 ## Usage
@@ -120,7 +131,7 @@ To convert a HTML GDOC document to RFC XML format, you need to follow these step
 
 1. Copy your input HTML file under the `work_dir` folder in your local system
 
-2. Modify the `rfc_format.xml` accordingly to your draft information
+2. Modify the `rfc_format.xml` accordingly to your draft information, as described in [RFC scheleton](#rfc-scheleton)
 
 3. Update the `configuration.conf` file if needed, adding the filename of the html document, and the chapters to export into the draft.
 
