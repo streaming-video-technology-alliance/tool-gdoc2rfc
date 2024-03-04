@@ -34,14 +34,20 @@ for filename in os.listdir(location):
     pattern = r'\[SVTA(\d{4})\]'
     filedata = re.sub(pattern, r'<xref target="SVTA\1" />', filedata)
 
+   # Replace all [ietf*] references
+    print ("IETF draft document references:", re.findall('\[ietf([^\]]*)\]', filedata))
+    pattern = r'\[ietf([^\]]*)\]'
+    filedata = re.sub(pattern, r'<xref target="ietf\1" />', filedata)
+
     # Replace other misc references  
     filedata = filedata.replace('[CDNI-MEL]', '<xref target="CDNI-MEL" />')
-    filedata = filedata.replace('[AWSv4Method]', '<xref target="AWSv4Method" />')
+    filedata = filedata.replace('[AWSv4]', '<xref target="AWSv4" />')
     filedata = filedata.replace('[X.509]', '<xref target="X.509" />')
     filedata = filedata.replace('[HCVAULT]', '<xref target="HCVAULT" />')
     filedata = filedata.replace('[URI.signing]', '<xref target="URI.signing" />')
     filedata = filedata.replace('[W3C]', '<xref target="W3C" />')
     filedata = filedata.replace('[PCRE]', '<xref target="PCRE" />')
+
 
     # Write the file out again
     with open(location+filename, 'w') as file:
