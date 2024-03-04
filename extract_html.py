@@ -44,6 +44,9 @@ def title_case(title):
     new_title = new_title.replace("Cdni", "CDNI")
     new_title = new_title.replace("Fci", "FCI")
     new_title = new_title.replace("Bnf", "BNF")
+
+    # fix quotes or spaces in title
+    new_title = encode_text(new_title)
     return new_title
 
 def anchor_this(text):
@@ -392,6 +395,7 @@ def get_html_text(tree):
                             tmpText = tmpText.replace(u'&#160;', u' ')
                             tmpText = tmpText.replace('&lt;','<');
                             tmpText = tmpText.replace('&gt;','>');
+                            tmpText = tmpText.replace('\xa0',' ')
 
                             text = text + tmpText
 
