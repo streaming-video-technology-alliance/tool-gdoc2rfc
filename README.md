@@ -77,6 +77,25 @@ figures_process= [{'label':'Figure 1: name','filename':'figure_1.xml'},{'label':
 - `work_directory`: The directory containing the figure tags with embedded ascii-art and optional SVG art.
 - `figures_process`: List of specifiers as pairs, where `label` is the name of the figure to replace, and `filename` is the name of the figure file in the figures directory.
 
+Notes on use of figures:
+- In the figures_process array, 'label' must exactly match the figure title text in the original input document.
+- Each figure XML file MUST contain a <figure>...</figure> element as documented in https://authors.ietf.org/en/rfcxml-vocabulary.
+- Each figure MUST contain an <artset> with at least one <artwork> of type "ascii-art".
+- The <artset> MAY contain an additional <artwork> type "svg", with  "src" attribute referencing an SVG file that is publicly accessbile.
+- SVG files must meet the IETF RFC strict criteria. Use of the IETF-provided svgcheck tool with the options "-r -g" can be used to conform files.
+
+```python
+<figure title="Figure Title">
+   <artset>
+      <artwork type="svg" src="https://me.com/figure_1.svg" />
+      <artwork type="ascii-art">
+      <![CDATA[
+ ASCII ART WORK HERE
+   ]]>
+      </artwork>
+   </artset>
+</figure>
+```
 
 3. `[generate_rfc]` affects to `generate_rfc.py` 
 
