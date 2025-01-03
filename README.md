@@ -143,6 +143,9 @@ That means you need to manually modify the scheleton `rfc_format.xml` according 
 - Modify the `<abstract>` node as needed
 - Modify both the Normative References and Informative References. Add as many as required
 
+Notes on References:
+- `extract_references.py` has a table named external_docs that lists anchor names external specification references (example: [CTA-5007]. Add any new references here, and also add the appropriate document document reference information in the references sections of your rfc_format.xml file.
+- `extract_references.py` has a table named svta_drafts that lists anchor names for SVTA documents that also exist as SVTA drafts. (example: [SVTA2031]. Add any new references here, and also add the appropriate document document reference information in the references sections of your rfc_format.xml file. This allows the tools to convert SVTA document references to IETF document references.
 
 ## Usage
 
