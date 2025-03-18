@@ -30,7 +30,7 @@ external_docs = {
   "[W3C]",
   "[PCRE]",
   "[WHATWG-FETCH]",
-  "[CTA-5007]"
+  "[CTA-5007-A]"
   }
 
 
