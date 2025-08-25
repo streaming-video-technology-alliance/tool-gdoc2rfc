@@ -16,7 +16,6 @@ svta_drafts = {
   "[SVTA2035]": "ietf-cdni-client-access-control-metadata",
   "[SVTA2036]": "ietf-cdni-edge-control-metadata",
   "[SVTA2037]": "bichot-delivery-metadata",
-  "[SVTA2038]": "warshavsky-private-features-metadata",
   "[SVTA2039]": "ietf-cdni-protected-secrets-metadata"
 }
 
@@ -79,21 +78,21 @@ for filename in os.listdir(location):
       filedata = file.read()
 
     # Replace all [RFCxxx] references
-    refs = re.findall('\[RFC(\d{4})\]', filedata)
+    refs = re.findall(r'\[RFC(\d{4})\]', filedata)
     if (refs):
       print ("RFC document references:", refs)
       pattern = r'\[RFC(\d{4})\]'
       filedata = re.sub(pattern, r'<xref target="RFC\1" />', filedata)
  
     # Replace all [ietf*] references
-    refs = re.findall('\[ietf([^\]]*)\]', filedata)
+    refs = re.findall(r'\[ietf([^\]]*)\]', filedata)
     if (refs):
       print ("IETF draft document references:", refs)
       pattern = r'\[ietf([^\]]*)\]'
       filedata = re.sub(pattern, r'<xref target="ietf\1" />', filedata)
 
     # Replace [SVTAxxxx] references with internet draft references for SVTA docs that have IETF drafts
-    refs = re.findall('\[SVTA(\d{4})\]', filedata)
+    refs = re.findall(r'\[SVTA(\d{4})\]', filedata)
     if (refs):
       print ("SVTA document references:", refs)
       filedata = replace_svta_draft_references(filedata)
