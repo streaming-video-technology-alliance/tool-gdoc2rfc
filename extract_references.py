@@ -9,13 +9,13 @@ import configparser
 
 # Dictionary of referenced SVTA docs that have IETF drafts
 svta_drafts = {
-  "[SVTA2031]": "power-metadata-expression-language",
-  "[SVTA2032]": "goldstein-processing-stages-metadata",
+  "[SVTA2031]": "ietf-cdni-metadata-expression-language",
+  "[SVTA2032]": "ietf-cdni-processing-stages-metadata",
   "[SVTA2033]": "ietf-cdni-cache-control-metadata",
-  "[SVTA2034]": "chaudhari-source-access-control-metadata",
+  "[SVTA2034]": "ietf-cdni-source-access-control-metadata",
   "[SVTA2035]": "ietf-cdni-client-access-control-metadata",
   "[SVTA2036]": "ietf-cdni-edge-control-metadata",
-  "[SVTA2037]": "bichot-delivery-metadata",
+  "[SVTA2037]": "ietf-cdni-delivery-metadata",
   "[SVTA2039]": "ietf-cdni-protected-secrets-metadata"
 }
 
